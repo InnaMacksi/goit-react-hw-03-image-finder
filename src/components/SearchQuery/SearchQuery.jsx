@@ -41,9 +41,6 @@ class SearchQuery extends Component {
     }
   }
   
-
-
-
   searchItems = ({ search }) => {
     this.setState({ search, items: [], page: 1 });
   };
