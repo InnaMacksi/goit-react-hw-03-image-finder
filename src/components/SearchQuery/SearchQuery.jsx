@@ -19,12 +19,22 @@ class SearchQuery extends Component {
     showModal: false,
     largeImage: null,
   };
-
-  componentDidUpdate(prevProps, prevState) {
+/*було
+componentDidUpdate(prevProps, prevState) {
     const { search, page } = this.state;
     if (prevState.search !== search || prevState.page !== page) {
       this.fetchPhotos();
     } 
+  }
+*/
+  componentDidUpdate(prevProps, prevState) {
+    const { search, page } = this.state;
+    if (prevState.search !== search || prevState.page !== page) {
+      this.fetchPhotos();
+    } else if (prevState.search === search && prevState.items.length > 0){
+            this.setState(prevState => ({
+              items: [...prevState.items],
+            }))};
   }
 
   async fetchPhotos() {
