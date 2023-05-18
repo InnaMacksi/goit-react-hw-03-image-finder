@@ -7,6 +7,7 @@ import Button from 'components/Button/Button';
 import Modal from 'components/Modal/Modal';
 import LargeImage from 'components/LargeImage/LargeImage';
 import ButtonUp from 'components/ButtonUp/ButtonUp';
+// import Notiflix from 'notiflix';
 
 class SearchQuery extends Component {
   state = {
@@ -23,7 +24,7 @@ class SearchQuery extends Component {
     const { search, page } = this.state;
     if (prevState.search !== search || prevState.page !== page) {
       this.fetchPhotos();
-    }
+    } 
   }
 
   async fetchPhotos() {
@@ -72,8 +73,7 @@ class SearchQuery extends Component {
     behavior: 'smooth',
   });
 }
-
-  render() {
+render() {
     const { items, loading, error, showModal, largeImage } = this.state;
     const { searchItems, loadMore, showLargeImage, closeModal, handleScrollUp } = this;
     // console.log(items);

@@ -1,5 +1,6 @@
 import { Component } from 'react';
 import PropTypes from 'prop-types';
+import Notiflix from 'notiflix';
 import styles from './searchbar.module.css';
 
 class Searchbar extends Component {
@@ -12,11 +13,28 @@ class Searchbar extends Component {
     this.setState({ [name]: value });
   };
 
-  handleSubmit = e => {
+/*було
+handleSubmit = e => {
     e.preventDefault();
     const { onSubmit } = this.props;
     onSubmit({ ...this.state });
     this.reset();
+  };
+*/
+
+  handleSubmit = e => {
+    e.preventDefault();
+    
+    this.setState(prevState => {
+      const { search } = this.state;
+      if (search === prevState.search) {
+        return Notiflix.Notify.info('We are already showing photos at your request');
+      } else {
+        const { onSubmit } = this.props;
+        onSubmit({ ...this.state });
+        this.reset();
+      }
+    });
   };
 
   reset() {
