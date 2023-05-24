@@ -7,6 +7,7 @@ import Button from './Button/Button';
 import Modal from './Modal/Modal';
 import LargeImage from './LargeImage/LargeImage';
 import ButtonUp from './ButtonUp/ButtonUp';
+import Notiflix from 'notiflix';
 
 export class App extends Component{
 
@@ -31,7 +32,11 @@ componentDidUpdate(prevProps, prevState) {
     const { search, page } = this.state;
     if (prevState.search !== search || prevState.page !== page) {
       this.fetchPhotos();
-    } 
+    }
+    else if (prevState.search === search) { 
+      Notiflix.Notify.info('Please, change your search query.');
+      return;
+    }
   }
   async fetchPhotos() {
     try {
