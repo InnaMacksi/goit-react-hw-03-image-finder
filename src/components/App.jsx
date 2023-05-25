@@ -9,9 +9,8 @@ import LargeImage from './LargeImage/LargeImage';
 import ButtonUp from './ButtonUp/ButtonUp';
 import Notiflix from 'notiflix';
 
-export class App extends Component{
-
- state = {
+export class App extends Component {
+  state = {
     search: '',
     items: [],
     loading: false,
@@ -19,49 +18,48 @@ export class App extends Component{
     page: 1,
     showModal: false,
     largeImage: null,
-  };  
+  };
 
-
-  onSubmit = (e)=>{
+  onSubmit = e => {
     e.preventDefault();
-    
-    this.setState({ searchWord: e.target.searchWord.value.trim() })
-  }
 
-componentDidUpdate(prevProps, prevState) {
+    this.setState({ search: e.target.search.value.trim() });
+  };
+
+  componentDidUpdate(prevProps, prevState) {
     const { search, page } = this.state;
     if (prevState.search !== search || prevState.page !== page) {
       this.fetchPhotos();
     }
-    else if (prevState.search === search) { 
-      Notiflix.Notify.info('Please, change your search query.');
-      return;
-    }
   }
   async fetchPhotos() {
     try {
-      this.setState({loading: true});
+      this.setState({ loading: true });
       const { search, page } = this.state;
       const data = await searchPhoto(search, page);
-      this.setState(({ items }) => ({items: [...items, ...data.hits]}))
-    }
-    catch (error) {
-      this.setState({ error: error.message })
-    }
-    finally {this.setState({ loading: false })
-
+      this.setState(({ items }) => ({ items: [...items, ...data.hits] }));
+    } catch (error) {
+      this.setState({ error: error.message });
+    } finally {
+      this.setState({ loading: false });
     }
   }
-  
+
   searchItems = ({ search }) => {
-    this.setState({ search, items: [], page: 1 });
+    this.setState(prevState => {
+      if (prevState.search === search) {
+        Notiflix.Notify.info('Please, change your search query.');
+        return;
+      } else {
+        this.setState({ search, items: [], page: 1 });
+      }
+    });
   };
 
   loadMore = () => {
-    this.setState(({ page }) => ({ page: page + 1 }))
-    
-  }
-  
+    this.setState(({ page }) => ({ page: page + 1 }));
+  };
+
   showLargeImage = ({ largeImageURL, tags }) => {
     this.setState({
       largeImage: {
@@ -69,46 +67,54 @@ componentDidUpdate(prevProps, prevState) {
         tags,
       },
       showModal: true,
-    })
-  }
+    });
+  };
 
   closeModal = () => {
-  this.setState({
+    this.setState({
       largeImage: null,
       showModal: false,
     });
-  }
-  handleScrollUp = (e)=> {
-  window.scrollTo({
-    top: 0,
-    behavior: 'smooth',
-  });
-}
+  };
+  handleScrollUp = e => {
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth',
+    });
+  };
 
   render() {
     const { items, loading, error, showModal, largeImage } = this.state;
-    const { searchItems, loadMore, showLargeImage, closeModal, handleScrollUp } = this;
-  return (
-    <div
-      style={{
-        height: '100vh',
-        display: 'bloc',
-        justifyContent: 'center',
-        alignItems: 'center',
-        fontSize: 40,
-        color: '#010101'
-      }}
-    >
+    const {
+      searchItems,
+      loadMore,
+      showLargeImage,
+      closeModal,
+      handleScrollUp,
+    } = this;
+    return (
+      <div
+        style={{
+          height: '100vh',
+          display: 'bloc',
+          justifyContent: 'center',
+          alignItems: 'center',
+          fontSize: 40,
+          color: '#010101',
+        }}
+      >
         <Searchbar onSubmit={searchItems} />
         <ImageGallery items={items} showLargeImage={showLargeImage} />
-        {loading && <Loader/>}
+        {loading && <Loader />}
         {error && <p>{error}</p>}
         {Boolean(items.length) && <Button onClick={loadMore} />}
         {items.length > 12 && <ButtonUp onClick={handleScrollUp} />}
-        {showModal && <Modal close={closeModal}>
-          <LargeImage {...largeImage} />
-        </Modal>}
-      
-    </div>
-  );}
-};
+        {showModal && (
+          <Modal close={closeModal}>
+            <LargeImage {...largeImage} />
+          </Modal>
+        )}
+      </div>
+    );
+  }
+}
